@@ -8,3 +8,6 @@ https://herewecode.io/blog/create-a-postgresql-database-using-docker-compose/
 
 ### PGADMIN
 https://www.pgadmin.org/docs/pgadmin4/development/container_deployment.html
+
+### Database settings
+https://stackoverflow.com/questions/26881739/unable-to-get-spring-boot-to-automatically-create-database-schema
