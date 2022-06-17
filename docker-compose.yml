@@ -1,14 +1,9 @@
 version: '3.5'
 
 services:
-  postgres:
-    container_name: postgres_container
+  customer_db:
+    container_name: customer_db_container
     image: postgres
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#      PGDATA: /data/postgres
-#      POSTGRES_DB: customer # The PostgreSQL default database (automatically created at first launch)
     env_file:
       - .env
     volumes:
@@ -19,12 +14,29 @@ services:
       - postgres
     restart: unless-stopped
 
-#  FIXME! Working incorrectly!
+  fraud_db:
+    container_name: fraud_db_container
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      # The PostgreSQL default database (automatically created at first launch)
+      - POSTGRES_DB=fraud
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 5436:5432
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  #  FIXME! Working incorrectly!
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin_container
     depends_on:
-      - postgres
+      - fraud_db
+      - customer_db
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
