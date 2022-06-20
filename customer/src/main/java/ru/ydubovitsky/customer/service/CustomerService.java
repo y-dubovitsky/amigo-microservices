@@ -2,10 +2,10 @@ package ru.ydubovitsky.customer.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import ru.ydubovitsky.clients.fraud.FraudCheckResponse;
+import ru.ydubovitsky.clients.fraud.FraudClient;
 import ru.ydubovitsky.customer.model.Customer;
 import ru.ydubovitsky.customer.payload.CustomerRegistrationRequest;
-import ru.ydubovitsky.customer.payload.FraudCheckResponse;
 import ru.ydubovitsky.customer.repository.CustomerRepository;
 
 @Service
@@ -13,7 +13,7 @@ import ru.ydubovitsky.customer.repository.CustomerRepository;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final RestTemplate restTemplate;
+    private final FraudClient fraudClient;
 
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
         Customer customer = Customer.builder()
@@ -24,11 +24,8 @@ public class CustomerService {
 
         customerRepository.saveAndFlush(customer); //FIXME how it is working? saveAndFlush??
 
-        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
-                "http://FRAUD/api/v1/fraud-check/{customerId}",
-                FraudCheckResponse.class,
-                customer.getId()
-        );
+        //OpenFeign in action
+        FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
 
         if(fraudCheckResponse.isFraudulentCustomer()) {
             throw new IllegalStateException("This customer is fraudster!");

@@ -2,7 +2,7 @@ package ru.ydubovitsky.fraud.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.ydubovitsky.fraud.payload.FraudCheckResponse;
+import ru.ydubovitsky.clients.fraud.FraudCheckResponse;
 import ru.ydubovitsky.fraud.service.FraudCheckHistoryService;
 
 @RestController
