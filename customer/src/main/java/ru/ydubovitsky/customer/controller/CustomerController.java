@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import ru.ydubovitsky.customer.payload.CustomerRegistrationRequest;
+import ru.ydubovitsky.customer.payload.NotificationRequest;
 import ru.ydubovitsky.customer.service.CustomerService;
 
 @Slf4j

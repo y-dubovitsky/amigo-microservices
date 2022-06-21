@@ -30,6 +30,22 @@ services:
       - postgres
     restart: unless-stopped
 
+  notification_db:
+    container_name: notification_db_container
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      # The PostgreSQL default database (automatically created at first launch)
+      - POSTGRES_DB=notification
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 5437:5432
+    networks:
+      - postgres
+    restart: unless-stopped
+
   #  FIXME! Working incorrectly!
   pgadmin:
     image: dpage/pgadmin4
