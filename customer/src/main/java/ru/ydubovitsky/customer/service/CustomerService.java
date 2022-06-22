@@ -1,22 +1,25 @@
 package ru.ydubovitsky.customer.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import ru.ydubovitsky.clients.fraud.FraudCheckResponse;
 import ru.ydubovitsky.clients.fraud.FraudClient;
+import ru.ydubovitsky.clients.notification.NotificationClient;
+import ru.ydubovitsky.clients.notification.NotificationRequest;
+import ru.ydubovitsky.clients.notification.NotificationResponse;
 import ru.ydubovitsky.customer.model.Customer;
 import ru.ydubovitsky.customer.payload.CustomerRegistrationRequest;
-import ru.ydubovitsky.customer.payload.NotificationRequest;
 import ru.ydubovitsky.customer.repository.CustomerRepository;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final RestTemplate restTemplate;
     private final FraudClient fraudClient;
+    private final NotificationClient notificationClient;
 
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
         Customer customer = Customer.builder()
@@ -35,15 +38,14 @@ public class CustomerService {
         }
 
         // Send notification!
-        restTemplate.getForObject(
-                "http://NOTIFICATION/api/v1/notification/add",
-                NotificationRequest.class,
-                NotificationRequest.builder()
-                        .toCustomerEmail(customerRegistrationRequest.getEmail())
-                        .toCustomerId(1)
-                        .message("You had registered")
-                        .build()
-        );
+        NotificationResponse notificationResponse =
+                notificationClient.addNotification(
+                        NotificationRequest.builder()
+                        .message("You had registered!")
+                        .toCustomerEmail(customer.getEmail())
+                        .toCustomerId(customer.getId())
+                        .build());
 
+        log.info(notificationResponse.toString()); //TODO?
     }
 }
