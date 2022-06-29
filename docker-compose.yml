@@ -86,6 +86,12 @@ services:
       # - 9410:9410
 #    depends_on:
 #      - storage
+  rabbitmq:
+    container_name: rabbitmq_container
+    image: rabbitmq:3.9.11-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
 #  pgadmin:
 #    container_name: pgadmin_container
